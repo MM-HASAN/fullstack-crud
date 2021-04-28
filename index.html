@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <div id="datum">
+
+  </div>
+  <h1> Data base file:</h1>
+  <div id="update">
+
+  </div>
+
+  <form action="/addName" method="post">
+
+    <input type="text" placeholder="name" name="name">
+    <input type="text" placeholder="price" name="price">
+    <input type="text" placeholder="quantity" name="quantity">
+    <br>
+    <button type="submit">addProduct</button>
+
+  </form>
+
+
+  <script>
+    fetch('/names')
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        const datum = document.getElementById('datum');
+        data.forEach((item) => {
+          const p = document.createElement('p')
+          p.innerHTML = ` <b> name: ${item.name}, price: ${item.price}, 
+            and quantity:${item.quantity} </b>
+            
+            <button onclick={loadName('${item._id}')}>update</button>
+            <button onclick={deleteName('${item._id}')}>delete</button>`
+          datum.appendChild(p)
+        })
+
+      });
+    function loadName(id) {
+      fetch(`/name/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          const update = document.getElementById('update');
+          update.innerHTML = `
+            <h2> Update Data: ${data._id}</h2>
+            <br>
+            <input type="text" value="${data.name}" id="name">
+            <input type="text" value="${data.price}" id="price">
+            <input type="text" value="${data.quantity}" id="quantity">
+            <br>
+            <button onClick="update('${item._id}')">submit</button>
+          `;
+        })
+    }
+
+    update = (id) => {
+      const name = document.getElementById('name').value;
+      const price = document.getElementById('price').value;
+      const quantity = document.getElementById('quantity').value;
+
+      const names = { name, price, id, quantity }
+      fetch(`/update/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'Application/json' },
+        body: JSON.stringify(names),
+
+      })
+        .then(res => res.json())
+        .then(data => {
+          console.log("update data")
+        })
+    }
+
+
+    deleteName = (id) => {
+      fetch(`/delete/${id}`, {
+        method: 'DELETE'
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('delete item', data)
+        })
+
+    }
+  </script>
+</body>
+
+</html>
