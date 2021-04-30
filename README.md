@@ -9,4 +9,4 @@
 ## mongodb
 
 
-//prctice fullstack crud operation
+//practice fullstack crud operation
